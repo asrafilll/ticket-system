@@ -6,12 +6,102 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING") 
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model Branch {
-  id String @id @default(cuid())
-  name String @unique
+model Vendor {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  users   User[]
+  tickets Ticket[]
+}
+
+model User {
+  id       String   @id @default(uuid())
+  username String   @unique
+  password String
+  role     String   
+  vendorId String?
+  vendor   Vendor?  @relation(fields: [vendorId], references: [id])
+  tickets  Ticket[]
+}
+
+model Ticket {
+  id              String     @id @default(uuid())
+  ticketNo        String     @unique
+  customerId      String
+  customer        Customer   @relation(fields: [customerId], references: [id])
+  issue           String
+  camInfo         String
+  detailProblem   String
+  vendorId        String?
+  vendor          Vendor?    @relation(fields: [vendorId], references: [id])
+  userId          String?
+  user            User?      @relation(fields: [userId], references: [id])
+  status          String
+  ETA             DateTime?
+  achievedDate    DateTime?
+  quotationNumber Int?
+  poNumber        String?
+  bastStatus      String?
+  invoiceNumber   String?
+  invoiceDateSend DateTime?
+  bastId          String?
+  workOrder       WorkOrder?
+}
+
+model Customer {
+  id         String      @id @default(uuid())
+  name       String      @unique
+  country    String
+  province   String
+  city       String
+  postalCode String
+  googleMaps String?
+  tickets    Ticket[]
+  workOrders WorkOrder[]
+}
+
+model WorkOrder {
+  id                     String              @id @default(uuid())
+  customerId             String
+  customer               Customer            @relation(fields: [customerId], references: [id])
+  picStoreId             String
+  picStore               PicStore            @relation(fields: [picStoreId], references: [id])
+  ticketNumberId         String              @unique
+  ticketNumber           Ticket?             @relation(fields: [ticketNumberId], references: [ticketNo])
+  date                   DateTime?
+  time                   DateTime?
+  cctvType               String?
+  recorderSN             String?
+  problemDescription     String?
+  actionTaken            String?
+  startDate              DateTime?
+  endDate                DateTime?
+  timeStart              DateTime?
+  timeEnded              DateTime?
+  technicalSignature     String?
+  customerSignature      String?
+  qris                   String?
+  qrisCreatedAt          DateTime?
+  additionalServices AdditionalService[]
+}
+
+model PicStore {
+  id         String      @id @default(uuid())
+  name       String      @unique
+  address    String?
+  phone      String?
+  workOrders WorkOrder[]
+}
+
+model AdditionalService {
+  id           String    @id @default(uuid())
+  itemId       String?
+  modelType    String?
+  serialNumber String?
+  workOrderId  String
+  workOrder    WorkOrder @relation(fields: [workOrderId], references: [id])
 }
