@@ -6,8 +6,12 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Modal,
 } from "@nextui-org/react";
 import { columns, customerDatas } from "./Data/CustomersData";
+import { Trash, Pencil } from "lucide-react";
+import SharedModal, { EditModal } from "@/components/Shared/EditModal";
+import { DeleteModal } from "@/components/Shared/DeleteModal";
 
 export const CustomersComponent = () => {
   const renderCell = React.useCallback((user, columnKey) => {
@@ -15,7 +19,12 @@ export const CustomersComponent = () => {
 
     switch (columnKey) {
       case "actions":
-        return <div className="text-red-600 font-semibold">Delete</div>;
+        return (
+          <div className="flex gap-4">
+            <EditModal />
+            <DeleteModal />
+          </div>
+        );
       default:
         return cellValue;
     }

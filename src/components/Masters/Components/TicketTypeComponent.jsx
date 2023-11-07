@@ -8,6 +8,7 @@ import {
   TableCell,
 } from "@nextui-org/react";
 import { columns, ticketTypes } from "./Data/TicketTypeData";
+import { DeleteModal } from "@/components/Shared/DeleteModal";
 
 export const TicketTypeComponent = () => {
   const renderCell = React.useCallback((user, columnKey) => {
@@ -15,7 +16,7 @@ export const TicketTypeComponent = () => {
 
     switch (columnKey) {
       case "actions":
-        return <div className="text-red-600 font-semibold">Delete</div>;
+        return <DeleteModal />;
       default:
         return cellValue;
     }
