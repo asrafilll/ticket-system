@@ -1,26 +1,24 @@
-import MasterNavbar from "./Masters.Navbar";
+"use client";
+import { TicketTypeComponent } from "./Components/TicketTypeComponent";
+import { CustomersComponent } from "./Components/CustomersComponent";
+import { PICDataComponent } from "./Components/PICDataComponent";
+import { VendorsComponent } from "./Components/VendorsComponent";
+import { UsersComponent } from "./Components/UsersComponent";
 
-export const Masters = () => {
-  return (
-    <div className="mt-2">
-      <MasterNavbar />
+const menuItems = [
+  {
+    id: "ticketType",
+    label: "Ticket Type",
+    content: <TicketTypeComponent />,
+  },
+  { id: "customers", label: "Customers", content: <CustomersComponent /> },
+  { id: "picData", label: "PIC Data", content: <PICDataComponent /> },
+  { id: "vendors", label: "Vendors", content: <VendorsComponent /> },
+  { id: "users", label: "Users", content: <UsersComponent /> },
+];
 
-      <div className="max-w-5xl mx-auto mt-10">
-        <div className="flex gap-4 items-start">
-          <div className="border-1 border-neutral-100 w-1/3 rounded-lg">
-            <div className="flex-col gap-4 text-sm text-slate-600">
-              <div className="border-neutral-100 border-b-1 p-3">
-                Ticket Type
-              </div>
-              <div className="border-neutral-100 border-b-1 p-3">Customers</div>
-              <div className="border-neutral-100 border-b-1 p-3">PIC Data</div>
-              <div className="border-neutral-100 border-b-1 p-3">Vendors</div>
-              <div className="border-neutral-100 border-b-1 p-3">Users</div>
-            </div>
-          </div>
-          <div className="border-1 border-neutral-100 shadow-sm w-2/3 h-[700px] rounded-lg"></div>
-        </div>
-      </div>
-    </div>
-  );
+export const Masters = ({ id }) => {
+  const activeContent = menuItems.find((item) => item.id === id)?.content;
+
+  return activeContent;
 };

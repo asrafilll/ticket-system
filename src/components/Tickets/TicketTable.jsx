@@ -20,22 +20,24 @@ import { PlusIcon } from "./Icons/PlusIcon";
 import { VerticalDotsIcon } from "./Icons/VerticalDotsIcon";
 import { SearchIcon } from "./Icons/SearchIcon";
 import { ChevronDownIcon } from "./Icons/ChevronDownIcon";
-import { columns, users, statusOptions } from "./data";
+import { columns, statusOptions, tickets } from "./data";
 import { capitalize } from "@/utils";
 
 const statusColorMap = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
+  "Assign Team": "warning",
+  "Assign Schedule": "secondary",
+  "On Progress": "primary",
+  Reschedule: "warning",
+  Done: "success",
+  "New Ticket": "primary",
 };
 
 const INITIAL_VISIBLE_COLUMNS = [
   "id",
-  "age",
-  "team",
-  "email",
-  "name",
-  "role",
+  "store",
+  "issueCategory",
+  "vendor",
+  "dateSubmit",
   "status",
   "actions",
 ];
@@ -65,24 +67,24 @@ export default function TicketsTable() {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredTickets = [...tickets];
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase())
+      filteredTickets = filteredTickets.filter((ticket) =>
+        ticket.name.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
     if (
       statusFilter !== "all" &&
       Array.from(statusFilter).length !== statusOptions.length
     ) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status)
+      filteredTickets = filteredTickets.filter((ticket) =>
+        Array.from(statusFilter).includes(ticket.status)
       );
     }
 
-    return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+    return filteredTickets;
+  }, [tickets, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -103,26 +105,16 @@ export default function TicketsTable() {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey] || "";
+  const renderCell = React.useCallback((ticket, columnKey) => {
+    const cellValue = ticket[columnKey] || "";
 
     switch (columnKey) {
-      case "name":
-        return (
-          <User
-            avatarProps={{ radius: "lg", src: user.avatar }}
-            description={user.email}
-            name={cellValue}
-          >
-            {user.email}
-          </User>
-        );
-      case "role":
+      case "issueCategory":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">{cellValue}</p>
             <p className="text-bold text-tiny capitalize text-default-400">
-              {user.team}
+              {ticket.team}
             </p>
           </div>
         );
@@ -130,7 +122,7 @@ export default function TicketsTable() {
         return (
           <Chip
             className="capitalize"
-            color={statusColorMap[user.status]}
+            color={statusColorMap[ticket.status]}
             size="sm"
             variant="flat"
           >
@@ -247,7 +239,7 @@ export default function TicketsTable() {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {users.length} users
+            Total {tickets.length} tickets
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
@@ -268,7 +260,7 @@ export default function TicketsTable() {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    users.length,
+    tickets.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -315,7 +307,7 @@ export default function TicketsTable() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"No users found"} items={sortedItems}>
+      <TableBody emptyContent={"No tickets found"} items={sortedItems}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
